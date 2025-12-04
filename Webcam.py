@@ -3,10 +3,13 @@ from datetime import datetime
 
 bg_mode = False
 dt_mode = False
+save = False
 
 GREEN = (0,255,0)
 
 cap = cv2.VideoCapture(0)   #Passo 0 per collegarmi alla WebCam principale
+
+
 
 #ret, frame = cap.read()     #ret contiene True o False, cioè se la camera funziona o meno
 
@@ -29,6 +32,11 @@ while(cap.isOpened()):
         point = (frame.shape[1] - 160, frame.shape[0] - 5)
         now = datetime.now().strftime("%d/%m/%y %H:%M:%S")
         cv2.putText(frame, now, point, cv2.FONT_HERSHEY_PLAIN, 1, GREEN, 2)
+    if(save):
+        now = datetime.now().strftime("%d_%m_%y %H_%M_%S")
+        cv2.imwrite(f"img_{now}.jpg", frame)
+        print("Salvato")
+        save = not(save)
     
     
     cv2.imshow("Webcam", frame)
@@ -43,6 +51,9 @@ while(cap.isOpened()):
         print("Mostra data e ora")
     elif(k == 27):                #ESC
         break
+    elif(k == ord("s")):
+        save = not(save)
+        
 
 cap.release()                   #Rilasciamo la WebCam
 cv2.destroyAllWindows()         #Assicuriamoci che tutte le finestre vengano chiuse
