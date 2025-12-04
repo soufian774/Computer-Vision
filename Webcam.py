@@ -4,12 +4,13 @@ from datetime import datetime
 bg_mode = False
 dt_mode = False
 save = False
+rec = False
 
 GREEN = (0,255,0)
 
 cap = cv2.VideoCapture(0)   #Passo 0 per collegarmi alla WebCam principale
-
-
+codec = cv2.VideoWriter_fourcc(*"MJPG")
+out = cv2.VideoWriter('output.avi', codec, 30, (640,480))
 
 #ret, frame = cap.read()     #ret contiene True o False, cioè se la camera funziona o meno
 
@@ -37,6 +38,9 @@ while(cap.isOpened()):
         cv2.imwrite(f"img_{now}.jpg", frame)
         print("Salvato")
         save = not(save)
+    if(rec): 
+        cv2.circle(frame, (frame.shape[1] - 20, 20), 8, (0,0,255), cv2.FILLED)
+        out.write(frame)
     
     
     cv2.imshow("Webcam", frame)
@@ -53,7 +57,12 @@ while(cap.isOpened()):
         break
     elif(k == ord("s")):
         save = not(save)
+    elif(k ==ord("r")):
+        rec = not(rec)
         
+
+if(out != None):
+    out.release()
 
 cap.release()                   #Rilasciamo la WebCam
 cv2.destroyAllWindows()         #Assicuriamoci che tutte le finestre vengano chiuse
